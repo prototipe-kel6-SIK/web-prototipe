@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rawat Inap Rumah Sakit Untan</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <style>
+        /* Tambahan animasi dan efek */
+        .gradient-border {
+            border: 3px solid;
+            border-image: linear-gradient(90deg,#0fc0e8,#ffd700,#002c79) 1;
+            border-radius: 16px;
+        }
+        .glow-btn {
+            box-shadow: 0 0 12px #0fc0e8, 0 0 4px #ffd700;
+            transition: box-shadow 0.2s;
+        }
+        .glow-btn:hover {
+            box-shadow: 0 0 24px #ffd700, 0 0 8px #0fc0e8;
+        }
+        .feature.selected {
+            animation: pulse 0.7s;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0px #ffd700; }
+            50% { box-shadow: 0 0 24px #ffd700; }
+            100% { box-shadow: 0 0 0px #ffd700; }
+        }
+        .feature .icon {
+            font-size: 38px;
+            margin-bottom: 8px;
+            color: #0fc0e8;
+            transition: color 0.2s;
+        }
+        .feature.selected .icon {
+            color: #ffd700;
+        }
+        .feature .feature-detail {
+            font-style: italic;
+            font-size: 15px;
+            margin-top: 10px;
+            color: #002079;
+        }
+        /* Card effect untuk daftar pendaftar */
+        #daftar-list table {
+            box-shadow: 0 2px 16px rgba(0,32,121,0.08);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        /* Floating chat button */
+        #floating-chat {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 99;
+            background: linear-gradient(90deg,#0fc0e8 60%,#002c79 100%);
+            color: #fff;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: 0 4px 16px rgba(0,32,121,0.18);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #floating-chat:hover {
+            background: #ffd700;
+            color: #002c79;
+        }
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #23283a;
+            color: #ffd700;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+        .feature:hover .tooltip {
+            opacity: 1;
+        }
+        /* Transisi antar halaman */
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.7s; }
+        nav a.active { background: #002c79; color: #ffd700; }
+        /* Loader animasi style */
+        .loader {
+            border: 4px solid #e0f2f1;
+            border-top: 4px solid #0fc0e8;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+
+        /* Gradient background for body */
+        body {
+            background: linear-gradient(120deg, #002c79 0%, #ffffff 100%);
+            min-height: 100vh;
+            color: #002c79;
+        }
+
+        /* Card effect & glassmorphism for container */
+        .container.gradient-border {
+            backdrop-filter: blur(8px);
+            background: rgba(255,255,255,0.92);
+            box-shadow: 0 8px 32px rgba(0,44,121,0.12);
+            border: 3px solid;
+            border-image: linear-gradient(90deg,#002c79,#0fc0e8,#ffd700) 1;
+        }
+
+        /* Section header style */
+        h2 {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #002c79;
+            text-shadow: 0 2px 8px #0fc0e833;
+            margin-bottom: 18px;
+        }
+
+        /* Button style */
+        .glow-btn {
+            background: linear-gradient(90deg, #002c79 60%, #0fc0e8 100%);
+            color: #fff;
+            font-weight: bold;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px #0fc0e8;
+            transition: background 0.2s, color 0.2s, transform 0.2s;
+            font-size: 16px;
+        }
+        .glow-btn:hover {
+            background: linear-gradient(90deg, #ffd700 60%, #0fc0e8 100%);
+            color: #002c79;
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px #ffd700;
+        }
+
+        /* Table style */
+        #kamar-status table, #daftar-list table {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 16px #002c79;
+            background: #fff;
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+        #kamar-status th, #daftar-list th {
+            background: linear-gradient(90deg,#002c79,#0fc0e8);
+            color: #fff;
+            font-weight: bold;
+            padding: 10px;
+            border: none;
+        }
+        #kamar-status td, #daftar-list td {
+            padding: 10px;
+            font-size: 15px;
+            color: #002c79;
+            border: none;
+        }
+
+        /* Modal style */
+        #kamar-modal, #layanan-modal {
+            background: rgba(0,44,121,0.18);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #kamar-modal-content, #layanan-modal-content {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px #0fc0e8;
+            padding: 24px;
+            color: #002c79;
+            min-width: 260px;
+            max-width: 340px;
+        }
+
+        /* Feature card style */
+        .feature {
+            background: #f8fafd;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px #002c7922;
+            border: 1.5px solid #0fc0e8;
+            padding: 24px 12px;
+            text-align: center;
+            transition: box-shadow 0.2s, background 0.2s, transform 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+        .feature.selected, .feature:active {
+            background: linear-gradient(120deg,#ffd700 70%,#0fc0e8 100%);
+            box-shadow: 0 8px 24px #ffd70033;
+            border: 2px solid #002c79;
+        }
+        .feature:hover, .feature:focus {
+            background: linear-gradient(120deg,#e0f2f1 70%,#0fc0e8 100%);
+            transform: scale(1.04);
+        }
+        .feature .icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+            color: #0fc0e8;
+            transition: color 0.2s;
+        }
+        .feature.selected .icon {
+            color: #ffd700;
+        }
+        .feature h3 {
+            color: #002c79;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        .feature.selected h3 {
+            color: #ffd700;
+        }
+        .feature .feature-detail {
+            font-size: 14px;
+            margin-top: 10px;
+            color: #0fc0e8;
+            font-style: italic;
+        }
+        .tooltip {
+            background: #0fc0e8;
+            color: #fff;
+            font-weight: bold;
+            box-shadow: 0 2px 8px #ffd70099;
+            border-radius: 6px;
+            font-size: 13px;
+            padding: 6px 14px;
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+        .feature:hover .tooltip {
+            opacity: 1;
+        }
+        /* Statistik modern */
+        #statistik-pendaftar {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        #statistik-pendaftar > div {
+            padding: 18px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        #statistik-pendaftar .icon {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        /* Responsive */
+        @media (max-width: 700px) {
+            .container.gradient-border {
+                padding: 10px;
+            }
+            .feature {
+                padding: 16px 8px;
+            }
+            #kamar-modal-content, #layanan-modal-content {
+                padding: 12px;
+            }
+            nav {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="gradient-border">
+        <h1>Rawat Inap RS UNTAN</h1>
+        <p>Pelayanan Kesehatan Modern & Mudah Digunakan</p>
+    </header>
+    <nav>
+        <a href="#beranda" id="nav-beranda" class="active">Beranda</a>
+        <a href="#tentang" id="nav-tentang">Tentang</a>
+        <a href="#layanan" id="nav-layanan">Layanan</a>
+        <a href="#kontak" id="nav-kontak">Kontak</a>
+        <a href="#faq" id="nav-faq">FAQ</a>
+        <button id="darkmode-toggle" class="glow-btn" style="margin-left:20px;">🌙 Dark Mode</button>
+    
+    </nav>
+    <div class="container gradient-border">
+        <!-- LOGIN -->
+        <section class="section active" id="login">
+            <h2 style="color:#0fc0e8;">Masuk Sebagai Pasien</h2>
+            <div style="max-width:350px;margin:auto;text-align:center;">
+                <p style="margin-bottom:24px;">Klik tombol di bawah untuk mulai menggunakan layanan pendaftaran rawat inap RS UNTAN.</p>
+                <button id="login-btn" class="glow-btn" style="width:100%;margin-top:18px;font-size:18px;padding:14px 0;">Masuk</button>
+            </div>
+        </section>
+        <!-- BERANDA -->
+        <section class="section" id="beranda">
+            <h2 style="color:#0fc0e8;text-align:center;margin-bottom:36px;font-size:2.1rem;letter-spacing:1px;text-shadow:0 2px 12px #0fc0e855;">Selamat Datang di Rawat Inap RS UNTAN</h2>
+            <div style="display:flex;gap:32px;flex-wrap:wrap;justify-content:center;margin-bottom:38px;">
+                <button class="glow-btn beranda-btn" id="btn-cara" style="font-size:20px;padding:26px 48px;border-radius:18px;box-shadow:0 4px 24px #0fc0e8;display:flex;align-items:center;gap:16px;background:#fff;color:#0fc0e8;">
+                    <span style="font-size:32px;">📝</span> Cara Pendaftaran
+                </button>
+                <button class="glow-btn beranda-btn" id="btn-metode" style="font-size:20px;padding:26px 48px;border-radius:18px;box-shadow:0 4px 24px #d3c887;display:flex;align-items:center;gap:16px;background:#fff;color:#ffd700;">
+                    <span style="font-size:32px;">💳</span> Metode Pembayaran
+                </button>
+                <button class="glow-btn beranda-btn" id="btn-kontak" style="font-size:20px;padding:26px 48px;border-radius:18px;box-shadow:0 4px 24px #002c79;display:flex;align-items:center;gap:16px;background:#fff;color:#002c79;">
+                    <span style="font-size:32px;">☎️</span> Kontak & Bantuan
+                </button>
+            </div>
+            <div id="beranda-info" style="max-width:600px;margin:0 auto 32px auto;background:rgba(255,255,255,0.98);border-radius:22px;box-shadow:0 8px 36px #0fc0e822;padding:48px 38px;display:none;"></div>
+        </section>
+        <!-- TENTANG -->
+        <section class="section" id="tentang">
+            <h2 style="color:#ffd700;">Tentang Kami</h2>
+            <div style="display:flex;align-items:center;gap:30px;flex-wrap:wrap;">
+                <img src="167163_Rumah_Sakit_Universitas_Tanjungpura.jpg" alt="RS UNTAN" style="border-radius:12px;width:220px;box-shadow:0 4px 16px #0fc0e8;">
+                <div>
+                    <p>
+                        Rumah Sakit Universitas Tanjungpura (RS UNTAN) adalah rumah sakit pendidikan yang berkomitmen memberikan pelayanan kesehatan terbaik di Kalimantan Barat. Sebagai bagian dari Universitas Tanjungpura, RS UNTAN tidak hanya melayani masyarakat umum, tetapi juga menjadi pusat pendidikan dan penelitian di bidang kesehatan. 
+                    </p>
+                    <p>
+                        RS UNTAN dilengkapi dengan fasilitas modern, teknologi medis terkini, serta tenaga medis profesional yang berpengalaman di bidangnya. Kami menyediakan berbagai layanan kesehatan mulai dari rawat jalan, rawat inap, layanan gawat darurat, hingga layanan penunjang medis seperti laboratorium dan radiologi. 
+                    </p>
+                    <p>
+                        Dengan mengedepankan pelayanan yang ramah, cepat, dan transparan, RS UNTAN berusaha menjadi rumah sakit rujukan utama di wilayah Kalimantan Barat. Kami juga aktif dalam pengembangan ilmu pengetahuan dan pelatihan tenaga kesehatan melalui kolaborasi dengan fakultas kedokteran dan institusi pendidikan lainnya.
+                    </p>
+                    <ul style="color:#0fc0e8;">
+                        <li>Tenaga medis berpengalaman dan bersertifikat</li>
+                        <li>Fasilitas modern dan lengkap, termasuk kamar VIP dan ICU</li>
+                        <li>Pelayanan ramah, cepat, dan transparan</li>
+                        <li>Terintegrasi dengan sistem BPJS dan asuransi kesehatan lainnya</li>
+                        <li>Pusat pendidikan dan penelitian kesehatan</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        <!-- LAYANAN -->
+        <section class="section" id="layanan">
+            <h2 style="color:#002c79;text-align:center;margin-bottom:30px;font-size:2rem;letter-spacing:1px;">Pilih Kamar Rawat Inap</h2>
+            <div id="kamar-list" style="display:flex;gap:28px;flex-wrap:wrap;justify-content:center;margin-bottom:36px;">
+                <div class="feature kamar-card modern-card" data-kamar="Kamar VIP" tabindex="0" style="min-width:200px;box-shadow:0 4px 24px #ffd70044;">
+                    <div class="icon" style="font-size:48px;">⭐</div>
+                    <h3 style="font-size:1.2rem;">Kamar VIP</h3>
+                    <div class="feature-detail">Fasilitas eksklusif & nyaman</div>
+                    <div class="ketersediaan" id="stat-vip" style="margin-top:10px;font-weight:bold;"></div>
+                </div>
+                <div class="feature kamar-card modern-card" data-kamar="Kamar 1" tabindex="0" style="min-width:200px;box-shadow:0 4px 24px #0fc0e844;">
+                    <div class="icon" style="font-size:48px;">1️⃣</div>
+                    <h3 style="font-size:1.2rem;">Kamar 1</h3>
+                    <div class="feature-detail">Fasilitas lengkap</div>
+                    <div class="ketersediaan" id="stat-1" style="margin-top:10px;font-weight:bold;"></div>
+                </div>
+                <div class="feature kamar-card modern-card" data-kamar="Kamar 2" tabindex="0" style="min-width:200px;box-shadow:0 4px 24px #002c7944;">
+                    <div class="icon" style="font-size:48px;">2️⃣</div>
+                    <h3 style="font-size:1.2rem;">Kamar 2</h3>
+                    <div class="feature-detail">Fasilitas standar</div>
+                    <div class="ketersediaan" id="stat-2" style="margin-top:10px;font-weight:bold;"></div>
+                </div>
+                <div class="feature kamar-card modern-card" data-kamar="Kamar 3" tabindex="0" style="min-width:200px;box-shadow:0 4px 24px #0fc0e822;">
+                    <div class="icon" style="font-size:48px;">3️⃣</div>
+                    <h3 style="font-size:1.2rem;">Kamar 3</h3>
+                    <div class="feature-detail">Fasilitas dasar</div>
+                    <div class="ketersediaan" id="stat-3" style="margin-top:10px;font-weight:bold;"></div>
+                </div>
+            </div>
+            <div id="layanan-info" style="max-width:520px;margin:0 auto 32px auto;display:none;"></div>
+            <div id="form-pendaftaran" style="max-width:520px;margin:auto;"></div>
+        </section>
+        <!-- KONTAK -->
+        <section class="section" id="kontak">
+            <h2 style="color:#ffd700;">Kontak Kami</h2>
+            <div style="display:flex;align-items:center;gap:30px;">
+                <div>
+                    <p><strong>Alamat:</strong> W8QW+66J Rumah Sakit Universitas Tanjungpura, Jl. Profesor Dokter H. Hadari Nawawi, Bansir Laut, Kec. Pontianak Tenggara, Kota Pontianak, Kalimantan Barat 78115</p>
+                    <p><strong>Telepon:</strong> +62 896-6796-2529</p>
+                    <p><strong>Email:</strong> i1031241006@student.untan.ac.id</p>
+                    <p><strong>WhatsApp:</strong> 089667962529</p>
+                    <button onclick="window.open('https://wa.me/6281234567890','_blank')" class="glow-btn">Chat WhatsApp</button>
+                    <button onclick="window.location.href='mailto:info@rsuntan.ac.id'" class="glow-btn">Kirim Email</button>
+                </div>
+                <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd2e?auto=format&fit=crop&w=300&q=80" alt="Kontak RS" style="border-radius:12px;width:220px;">
+            </div>
+        </section>
+        <!-- FAQ -->
+        <section class="section" id="faq">
+            <h2 style="color:#0fc0e8;">Pertanyaan yang Sering Diajukan (FAQ)</h2>
+            <ul style="margin-top:24px;">
+                <li>
+                    <b>Bagaimana cara mendaftar rawat inap di RS UNTAN?</b>
+                    <span style="display:block;margin-top:6px;color:#002c79;">
+                        Anda dapat mendaftar rawat inap secara online melalui website ini dengan menekan tombol "Masuk", lalu pilih menu "Layanan" dan klik kamar yang diinginkan. Setelah itu, isi formulir pendaftaran dan upload surat keterangan dokter. Anda juga dapat mendaftar langsung di bagian pendaftaran RS UNTAN dengan membawa dokumen yang diperlukan.
+                    </span>
+                </li>
+                <li>
+                    <b>Dokumen apa saja yang perlu disiapkan untuk pendaftaran rawat inap?</b>
+                    <span style="display:block;margin-top:6px;color:#002c79;">
+                        Dokumen yang diperlukan antara lain: KTP pasien, kartu BPJS (jika menggunakan BPJS), surat rujukan dari dokter, dan kartu keluarga. Untuk pasien umum, cukup membawa identitas diri dan surat keterangan dokter.
+                    </span>
+                </li>
+                <li>
+                    <b>Apakah RS UNTAN menerima pasien BPJS?</b>
+                    <span style="display:block;margin-top:6px;color:#002c79;">
+                        Ya, RS UNTAN telah terintegrasi dengan BPJS Kesehatan. Pastikan Anda membawa kartu BPJS aktif dan surat rujukan dari fasilitas kesehatan tingkat pertama (FKTP) sesuai ketentuan BPJS.
+                    </span>
+                </li>
+                <li>
+                    <b>Bagaimana cara mengetahui ketersediaan kamar rawat inap?</b>
+                    <span style="display:block;margin-top:6px;color:#002c79;">
+                        Ketersediaan kamar dapat dilihat secara realtime pada menu "Layanan" di website ini. Informasi jumlah kamar tersedia akan selalu diperbarui secara otomatis.
+                    </span>
+                </li>
+                <li>
+                    <b>Metode pembayaran apa saja yang diterima di RS UNTAN?</b>
+                    <span style="display:block;margin-top:6px;color:#002c79;">
+                        RS UNTAN menerima pembayaran melalui cash, BPJS, transfer bank, dan virtual account (OVO, Gopay, DANA, ShopeePay, LinkAja, Jenius, dan lainnya). Informasi detail pembayaran dan harga dapat dilihat pada menu "Layanan" saat memilih kamar.
+                    </span>
+                </li>
+                <li>
+                    <b>Siapa yang dapat dihubungi jika membutuhkan bantuan atau informasi lebih lanjut?</b>
+                    <span style="display:block;margin-top:6px;color:#002c79;">
+                        Anda dapat menghubungi admin RS UNTAN melalui WhatsApp di <a href="https://wa.me/6281234567890" target="_blank" style="color:#0fc0e8;text-decoration:underline;">Chat Admin</a> atau email ke <a href="mailto:info@rsuntan.ac.id" style="color:#0fc0e8;text-decoration:underline;">info@rsuntan.ac.id</a>. Layanan bantuan tersedia setiap hari kerja.
+                    </span>
+                </li>
+                <li>
+                    <b>Apakah RS UNTAN memiliki fasilitas khusus untuk pasien dengan kebutuhan khusus?</b>
+                    <span style="display:block;margin-top:6px;color:#002c79;">
+                        Ya, RS UNTAN menyediakan fasilitas ramah disabilitas, seperti akses kursi roda, kamar mandi khusus, dan layanan pendampingan bagi pasien dengan kebutuhan khusus.
+                    </span>
+                </li>
+                <li>
+                    <b>Bagaimana prosedur kunjungan keluarga pasien rawat inap?</b>
+                    <span style="display:block;margin-top:6px;color:#002c79;">
+                        Keluarga pasien dapat berkunjung sesuai jam besuk yang telah ditetapkan oleh rumah sakit. Selama pandemi atau kondisi khusus, jam besuk dapat berubah sesuai kebijakan rumah sakit. Mohon selalu mengikuti protokol kesehatan yang berlaku.
+                    </span>
+                </li>
+            </ul>
+        </section>
+        <!-- BUAT AKUN PETUGAS -->
+        <section class="section" id="register" style="display:none;">
+            <h2 style="color:#0fc0e8;">Buat Akun Petugas</h2>
+            <form id="form-register" style="max-width:350px;margin:auto;">
+                <label for="reg-username">Username</label>
+                <input type="text" id="reg-username" name="reg-username" required autocomplete="username" style="width:100%;padding:10px;border-radius:8px;border:1px solid #0fc0e8;margin-bottom:12px;">
+                <label for="reg-password">Password</label>
+                <input type="password" id="reg-password" name="reg-password" required autocomplete="new-password" style="width:100%;padding:10px;border-radius:8px;border:1px solid #0fc0e8;">
+                <button type="submit" class="glow-btn" style="width:100%;margin-top:18px;">Buat Akun</button>
+                <div id="register-alert" style="display:none;color:red;margin-top:10px;"></div>
+            </form>
+            <div style="text-align:center;margin-top:16px;">
+                <button id="back-login-btn" class="glow-btn" style="background:#0fc0e8;">Kembali ke Login</button>
+            </div>
+        </section>
+    </div>
+    <footer class="gradient-border">
+        &copy; 2025 Rawat Inap RS UNTAN. All rights reserved.
+    </footer>
+    <!-- Toast notification -->
+    <div id="toast" style="position:fixed;bottom:32px;left:50%;transform:translateX(-50%);background:#0fc0e8;color:#fff;padding:12px 28px;border-radius:8px;box-shadow:0 2px 16px #002c79;display:none;font-size:16px;z-index:999;"></div>
+    <!-- Floating chat button -->
+    <div id="floating-chat" title="Chat Admin">💬</div>
+    <!-- Tambahkan tombol logout di pojok kanan atas setelah login -->
+    <button id="logout-btn" class="glow-btn" style="position:fixed;top:18px;right:18px;display:none;z-index:100;">Logout</button>
+    <!-- Modal detail statistik kamar -->
+    <div id="kamar-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,44,121,0.18);z-index:999;align-items:center;justify-content:center;">
+        <div id="kamar-modal-content"></div>
+    </div>
+    <!-- Modal detail layanan -->
+    <div id="layanan-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,44,121,0.18);z-index:999;align-items:center;justify-content:center;">
+        <div id="layanan-modal-content"></div>
+    </div>
+    <script>
+    // Status login
+    let isLoggedIn = false;
+
+    // Sembunyikan semua section kecuali login saat pertama kali
+    const navLinks = document.querySelectorAll('nav a');
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(sec => sec.classList.remove('active'));
+    document.getElementById('login').classList.add('active');
+
+    // Disable menu sebelum login
+    navLinks.forEach(link => {
+        link.classList.add('disabled');
+        link.style.pointerEvents = 'none';
+        link.style.opacity = '0.5';
+    });
+
+    // Login tanpa username & password, menu langsung aktif
+    document.getElementById('login-btn').onclick = function() {
+        isLoggedIn = true;
+        document.getElementById('login').classList.remove('active');
+        document.getElementById('beranda').classList.add('active');
+        navLinks.forEach(l => {
+            l.classList.remove('disabled');
+            l.style.pointerEvents = 'auto';
+            l.style.opacity = '1';
+        });
+        document.getElementById('nav-beranda').classList.add('active');
+        document.getElementById('logout-btn').style.display = 'block';
+        if (typeof showToast === "function") showToast('Selamat datang! Anda berhasil masuk.', '#0fc0e8');
+    };
+
+    // Logout tetap sama
+    document.getElementById('logout-btn').onclick = function() {
+        isLoggedIn = false;
+        sections.forEach(sec => sec.classList.remove('active'));
+        document.getElementById('login').classList.add('active');
+        navLinks.forEach(link => {
+            link.classList.add('disabled');
+            link.style.pointerEvents = 'none';
+            link.style.opacity = '0.5';
+            link.classList.remove('active');
+        });
+        this.style.display = 'none';
+        if (typeof showToast === "function") showToast('Anda telah logout!', '#e53935');
+    };
+
+    // Navigasi menu setelah login
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (!isLoggedIn) {
+                e.preventDefault();
+                if (typeof showToast === "function") showToast('Silakan login terlebih dahulu!', '#e53935');
+                return;
+            }
+            e.preventDefault();
+            navLinks.forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            sections.forEach(sec => sec.classList.remove('active'));
+            const target = link.getAttribute('href').replace('#','');
+            document.getElementById(target).classList.add('active');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+    });
+
+    // Tab switching untuk beranda modern
+    const btns = [
+        {btn: 'btn-cara', content: 'content-cara'},
+        {btn: 'btn-metode', content: 'content-metode'},
+        {btn: 'btn-kontak', content: 'content-kontak'}
+    ];
+    btns.forEach(({btn, content}) => {
+        document.getElementById(btn).onclick = function() {
+            btns.forEach(({btn: b, content: c}) => {
+                document.getElementById(b).classList.remove('active');
+                document.getElementById(c).classList.remove('active');
+            });
+            this.classList.add('active');
+            document.getElementById(content).classList.add('active');
+            // Scroll ke konten jika di mobile
+            document.getElementById(content).scrollIntoView({behavior: "smooth", block: "center"});
+        };
+    });
+
+    // Informasi untuk setiap tombol
+    const infoBeranda = {
+        'btn-cara': `
+            <div style="display:flex;align-items:center;gap:24px;">
+                <div style="flex:0 0 70px;">
+                    <div style="background:#0fc0e8;border-radius:50%;width:70px;height:70px;display:flex;align-items:center;justify-content:center;">
+                        <span style="font-size:38px;color:#fff;">📝</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color:#0fc0e8;margin-bottom:18px;font-size:1.35em;">Cara Pendaftaran</h3>
+                    <ol style="font-size:19px;color:#002c79;margin-left:22px;line-height:1.8;">
+                        <li>Klik tombol <b>Masuk</b> untuk login sebagai pasien.</li>
+                        <li>Pilih menu <b>Layanan</b> untuk melihat daftar kamar rawat inap.</li>
+                        <li>Klik kamar yang diinginkan (VIP, Kamar 1, Kamar 2, atau Kamar 3).</li>
+                        <li>Isi formulir pendaftaran dengan data yang benar.</li>
+                        <li>Klik tombol <b>Daftar</b> untuk mengirimkan permohonan.</li>
+                    </ol>
+                </div>
+            </div>
+        `,
+        'btn-metode': `
+            <div style="display:flex;align-items:center;gap:24px;">
+                <div style="flex:0 0 70px;">
+                    <div style="background:#ffd700;border-radius:50%;width:70px;height:70px;display:flex;align-items:center;justify-content:center;">
+                        <span style="font-size:38px;color:#002c79;">💳</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color:#ffd700;margin-bottom:18px;font-size:1.35em;">Metode Pembayaran</h3>
+                    <ul style="font-size:19px;color:#002c79;margin-left:22px;line-height:1.8;">
+                        <li><b>Cash</b></li>
+                        <li><b>BPJS</b></li>
+                        <li><b>Bank Transfer:</b> BCA, Mandiri, BRI, BNI, CIMB, Permata</li>
+                        <li><b>Virtual Account:</b> OVO, Gopay, DANA, ShopeePay, LinkAja, Jenius</li>
+                    </ul>
+                </div>
+            </div>
+        `,
+        'btn-kontak': `
+            <div style="display:flex;align-items:center;gap:24px;">
+                <div style="flex:0 0 70px;">
+                    <div style="background:#002c79;border-radius:50%;width:70px;height:70px;display:flex;align-items:center;justify-content:center;">
+                        <span style="font-size:38px;color:#ffd700;">☎️</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color:#002c79;margin-bottom:18px;font-size:1.35em;">Kontak & Bantuan</h3>
+                    <div style="font-size:19px;color:#002c79;line-height:1.8;">
+                        <div>Email: <a href="mailto:info@rsuntan.ac.id" style="color:#0fc0e8;text-decoration:underline;">info@rsuntan.ac.id</a></div>
+                        <div>WhatsApp: <a href="https://wa.me/6281234567890" target="_blank" style="color:#0fc0e8;text-decoration:underline;">Chat Admin</a></div>
+                        <div style="margin-top:18px;">
+                            <button onclick="window.open('https://wa.me/6281234567890','_blank')" class="glow-btn" style="margin-right:10px;">Chat WhatsApp</button>
+                            <button onclick="window.location.href='mailto:info@rsuntan.ac.id'" class="glow-btn">Kirim Email</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
+    };
+
+    ['btn-cara', 'btn-metode', 'btn-kontak'].forEach(id => {
+        document.getElementById(id).onclick = function() {
+            // Highlight tombol aktif
+            ['btn-cara', 'btn-metode', 'btn-kontak'].forEach(bid => document.getElementById(bid).classList.remove('active'));
+            this.classList.add('active');
+            // Tampilkan info
+            const infoDiv = document.getElementById('beranda-info');
+            infoDiv.innerHTML = infoBeranda[id];
+            infoDiv.style.display = 'block';
+            infoDiv.scrollIntoView({behavior: "smooth", block: "center"});
+        };
+    });
+    // Tampilkan info pertama kali (opsional, bisa dihapus jika ingin kosong saat awal)
+    document.getElementById('btn-cara').click();
+    </script>
+    <script>
+    // Data dummy realtime, bisa diganti dengan fetch API jika ada backend
+    function getKetersediaanRealtime() {
+        return {
+            "Kamar VIP": { 
+                tersedia: Math.floor(Math.random()*3)+1, 
+                pembayaran: [
+                    { metode: "Cash", icon: "💵", harga: "Rp 1.500.000 / malam" },
+                    { metode: "BPJS", icon: "🩺", harga: "Sesuai ketentuan BPJS" },
+                    { metode: "Transfer Bank", icon: "🏦", harga: "Rp 1.500.000 / malam" },
+                    { metode: "Virtual Account", icon: "💳", harga: "Rp 1.500.000 / malam" }
+                ]
+            },
+            "Kamar 1": { 
+                tersedia: Math.floor(Math.random()*3)+2, 
+                pembayaran: [
+                    { metode: "Cash", icon: "💵", harga: "Rp 1.000.000 / malam" },
+                    { metode: "BPJS", icon: "🩺", harga: "Sesuai ketentuan BPJS" },
+                    { metode: "Transfer Bank", icon: "🏦", harga: "Rp 1.000.000 / malam" }
+                ]
+            },
+            "Kamar 2": { 
+                tersedia: Math.floor(Math.random()*3)+3, 
+                pembayaran: [
+                    { metode: "Cash", icon: "💵", harga: "Rp 700.000 / malam" },
+                    { metode: "BPJS", icon: "🩺", harga: "Sesuai ketentuan BPJS" }
+                ]
+            },
+            "Kamar 3": { 
+                tersedia: Math.floor(Math.random()*3)+4, 
+                pembayaran: [
+                    { metode: "Cash", icon: "💵", harga: "Rp 400.000 / malam" }
+                ]
+            }
+        };
+    }
+
+    // Tampilkan ketersediaan realtime di setiap card
+    function updateKetersediaanCards() {
+        const data = getKetersediaanRealtime();
+        document.getElementById('stat-vip').innerHTML = `<span style="color:${data["Kamar VIP"].tersedia>0?'#0fc0e8':'red'}">${data["Kamar VIP"].tersedia} tersedia</span>`;
+        document.getElementById('stat-1').innerHTML = `<span style="color:${data["Kamar 1"].tersedia>0?'#0fc0e8':'red'}">${data["Kamar 1"].tersedia} tersedia</span>`;
+        document.getElementById('stat-2').innerHTML = `<span style="color:${data["Kamar 2"].tersedia>0?'#0fc0e8':'red'}">${data["Kamar 2"].tersedia} tersedia</span>`;
+        document.getElementById('stat-3').innerHTML = `<span style="color:${data["Kamar 3"].tersedia>0?'#0fc0e8':'red'}">${data["Kamar 3"].tersedia} tersedia</span>`;
+    }
+    updateKetersediaanCards();
+    setInterval(updateKetersediaanCards, 10000); // update setiap 10 detik
+
+    // Formulir pendaftaran modern dengan pembayaran interaktif
+    function tampilkanFormKamar(namaKamar, tersedia, pembayaranArr) {
+        // Buat tampilan pembayaran modern & interaktif
+        let pembayaranHTML = '<div style="display:flex;flex-wrap:wrap;gap:16px 24px;">';
+        pembayaranArr.forEach((p, idx) => {
+            pembayaranHTML += `
+                <div class="pembayaran-card" tabindex="0" data-metode="${p.metode}" style="flex:1 1 180px;min-width:160px;background:#f8fafd;border-radius:12px;box-shadow:0 2px 8px #0fc0e822;padding:14px 12px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:box-shadow 0.2s;">
+                    <span style="font-size:28px;">${p.icon}</span>
+                    <div>
+                        <div style="font-weight:bold;color:#002c79;">${p.metode}</div>
+                        <div style="color:#0fc0e8;font-size:15px;text-decoration:underline;cursor:pointer;" class="harga-link" data-idx="${idx}">${p.harga}</div>
+                    </div>
+                </div>
+            `;
+        });
+        pembayaranHTML += '</div>';
+
+        document.getElementById('layanan-info').style.display = 'block';
+        document.getElementById('layanan-info').innerHTML = `
+            <div class="gradient-border" style="background:#fff;padding:24px 18px 10px 18px;margin-bottom:18px;">
+                <h3 style="color:#0fc0e8;margin-bottom:10px;">${namaKamar}</h3>
+                <div style="margin-bottom:8px;">
+                    <b>Ketersediaan:</b> <span style="color:${tersedia>0?'#0fc0e8':'red'};font-weight:bold">${tersedia>0?tersedia+' tersedia':'Penuh'}</span>
+                </div>
+                <div style="margin-bottom:14px;">
+                    <b>Cara Pembayaran & Harga:</b>
+                    ${pembayaranHTML}
+                </div>
+                <div id="pembayaran-detail" style="margin-top:12px;display:none;"></div>
+            </div>
+        `;
+        document.getElementById('form-pendaftaran').innerHTML = `
+            <div class="gradient-border" style="background:#fff;padding:24px;">
+                <form id="form-daftar-kamar">
+                    <input type="hidden" name="kamar" value="${namaKamar}">
+                    <label>Nama Pasien:<br><input type="text" name="nama" required style="width:100%;padding:8px;margin-bottom:10px;border-radius:8px;border:1px solid #0fc0e8;"></label><br>
+                    <label>Umur:<br><input type="number" name="umur" required min="0" max="120" style="width:100%;padding:8px;margin-bottom:10px;border-radius:8px;border:1px solid #0fc0e8;"></label><br>
+                    <label>Jenis Kelamin:<br>
+                        <select name="jenis_kelamin" required style="width:100%;padding:8px;margin-bottom:10px;border-radius:8px;border:1px solid #0fc0e8;">
+                            <option value="">Pilih Jenis Kelamin</option>
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </label><br>
+                    <label>Keluhan:<br><input type="text" name="keluhan" required style="width:100%;padding:8px;margin-bottom:10px;border-radius:8px;border:1px solid #0fc0e8;"></label><br>
+                    <label>Upload Surat Rujukan dari dokter:<br>
+                        <input type="file" name="rujukan" accept=".pdf,.jpg,.jpeg,.png" required style="margin-bottom:10px;">
+                    </label><br>
+                    <button type="submit" class="glow-btn" style="width:100%;margin-top:10px;">Daftar</button>
+                </form>
+                <div id="form-alert-kamar" style="display:none;color:green;margin-top:10px;"></div>
+            </div>
+        `;
+        document.getElementById("form-daftar-kamar").onsubmit = function(e) {
+            e.preventDefault();
+            document.getElementById("form-alert-kamar").style.display = "block";
+            document.getElementById("form-alert-kamar").style.color = "green";
+            document.getElementById("form-alert-kamar").textContent = "Pendaftaran berhasil!";
+            this.reset();
+        };
+
+        // Event klik/metode pembayaran & harga
+        document.querySelectorAll('.pembayaran-card, .harga-link').forEach(function(el) {
+            el.onclick = function(e) {
+                const idx = el.dataset.idx || el.closest('.pembayaran-card').querySelector('.harga-link').dataset.idx;
+                const p = pembayaranArr[idx];
+                const detailDiv = document.getElementById('pembayaran-detail');
+                detailDiv.innerHTML = `
+                    <div style="background:#f8fafd;border-radius:10px;padding:16px 18px;box-shadow:0 2px 8px #0fc0e822;">
+                        <div style="font-size:22px;margin-bottom:8px;">${p.icon} <b>${p.metode}</b></div>
+                        <div style="color:#0fc0e8;font-size:17px;margin-bottom:6px;"><b>Harga:</b> ${p.harga}</div>
+                        <div style="color:#002c79;font-size:15px;">
+                            ${p.metode === "BPJS" 
+                                ? "Pembayaran BPJS sesuai ketentuan pemerintah. Pastikan membawa kartu BPJS aktif dan surat rujukan." 
+                                : p.metode === "Transfer Bank"
+                                    ? "Transfer ke rekening resmi RS UNTAN. Info rekening akan diberikan setelah pendaftaran."
+                                    : p.metode === "Virtual Account"
+                                        ? "Pembayaran dapat dilakukan melalui OVO, Gopay, DANA, ShopeePay, LinkAja, Jenius, dan lainnya."
+                                        : "Pembayaran dilakukan di kasir RS UNTAN saat check-in."
+                            }
+                        </div>
+                    </div>
+                `;
+                detailDiv.style.display = 'block';
+                detailDiv.scrollIntoView({behavior: "smooth", block: "center"});
+            };
+            // Keyboard accessibility
+            el.onkeypress = function(e) {
+                if (e.key === 'Enter' || e.key === ' ') el.click();
+            };
+        });
+    }
+
+    // Event klik fitur kamar
+    document.querySelectorAll('#kamar-list .kamar-card').forEach(function(el) {
+        el.addEventListener('click', function() {
+            // Ambil data realtime saat klik
+            const data = getKetersediaanRealtime();
+            const namaKamar = el.getAttribute('data-kamar');
+            const tersedia = data[namaKamar].tersedia;
+            const pembayaran = data[namaKamar].pembayaran;
+            tampilkanFormKamar(namaKamar, tersedia, pembayaran);
+        });
+        el.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const data = getKetersediaanRealtime();
+                const namaKamar = el.getAttribute('data-kamar');
+                const tersedia = data[namaKamar].tersedia;
+                const pembayaran = data[namaKamar].pembayaran;
+                tampilkanFormKamar(namaKamar, tersedia, pembayaran);
+            }
+        });
+    });
+    </script>
+    <script>
+    // DARK MODE TOGGLE
+    document.getElementById('darkmode-toggle').onclick = function() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        this.classList.toggle('active', isDark);
+        document.querySelectorAll('.gradient-border').forEach(el => {
+            el.classList.toggle('dark-mode', isDark);
+        });
+        document.querySelectorAll('.glow-btn').forEach(el => {
+            el.classList.toggle('dark-mode', isDark);
+        });
+        document.querySelectorAll('nav a').forEach(el => {
+            el.classList.toggle('dark-mode', isDark);
+        });
+        document.querySelectorAll('.feature').forEach(el => {
+            el.classList.toggle('dark-mode', isDark);
+        });
+        document.querySelectorAll('footer').forEach(el => {
+            el.classList.toggle('dark-mode', isDark);
+        });
+        // Simpan preferensi pengguna
+        localStorage.setItem('dark-mode', isDark);
+    };
+
+    // Cek preferensi pengguna saat pertama kali
+    if (localStorage.getItem('dark-mode') === 'true') {
+        document.getElementById('darkmode-toggle').click();
+    }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
